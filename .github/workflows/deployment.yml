@@ -20,28 +20,28 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-      
-
-    - name: Installing my packages
-      run: npm ci
-
-    - name: Build my App  
-      run: npm run build
-      env:
-        NEXT_PUBLIC_BASE_PATH: /next-deploy-yarn-test
-    - run: npm run export
-      env:
-        NEXT_PUBLIC_BASE_PATH: /next-deploy-yarn-test
-    - run: touch ./out/.nojekyll
-    
-    - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@3.5.9
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: out # The folder the action should deploy.
+      - name: Get files
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install packages
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install # will run `yarn install` command
+      - name: Build project
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: build # will run `yarn build` command
+      - name: Export static files
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: export
+      - name: Add .nojekyll file
+        run: touch ./out/.nojekyll
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: out
