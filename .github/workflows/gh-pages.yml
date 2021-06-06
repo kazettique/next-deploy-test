@@ -16,11 +16,14 @@ jobs:
         with:
           node-version: "14.x"
 
+      - name: Install Yarn
+        run: npm i -g yarn
+
       - name: Installing my packages
-        run: npm ci
+        run: yarn
 
       - name: Build my App
-        run: npm run build && npm run export && touch ./out/.nojekyll
+        run: yarn build && yarn export && touch ./out/.nojekyll
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.0
